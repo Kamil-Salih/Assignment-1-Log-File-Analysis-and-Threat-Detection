@@ -12,6 +12,7 @@ from collections import defaultdict #...(part 2)
 from datetime import datetime #...(part 3)
 from datetime import timedelta #...(part 3)
 import json #...(part 3)
+import matplotlib.pyplot as plt
 
 #Variables
 counts = defaultdict(int)           # Create a dictionary to keep track of IPs (part 2)
@@ -23,6 +24,7 @@ total_failed_logins=0 #part 5
 total_logins=0 #part 5
 ips = [] #part 5
 unique_ips = [] #part 5
+failed_attempt_counts = defaultdict(int) #part 7
 
 
 #Functions
@@ -239,9 +241,41 @@ with open("statistical_summary.txt", "w") as f6:
         f6.write(f_logins.read())
     
     f6.write("\n")
-    
+
     with open("unique_ips.txt", "r") as f_unique_ips: #file unique IPs
         f6.write(f_unique_ips.read())
 
 print("\n")
 print("Created statistical_summary.txt, it stores logins and unique IPs.")
+
+
+#Part 6 (skipped)
+
+
+#7.	Visualise findings (bar chart of attacker IPs).
+
+for ip, timestamps in per_ip_timestamps.items():
+    failed_attempt_counts[ip] = len(timestamps)
+
+def top_n(counts_dict, n=10):
+    return sorted(counts_dict.items(), key=lambda kv: kv[1], reverse=True)[:n]
+
+top_10_attacker_ips = top_n(failed_attempt_counts, n=10)
+
+#clears variables ips and counts from previous use
+ips = []
+counts = []
+
+for ip, failed_count in top_10_attacker_ips:
+    ips.append(ip)
+    counts.append(failed_count)
+
+
+plt.figure(figsize=(15,10))
+plt.bar(ips, counts)
+plt.title("Top 10 attacker IPs")
+plt.xlabel("IP")
+plt.ylabel("Failed attempts")
+plt.tight_layout()
+plt.savefig("top_attackers.png")
+plt.show()
