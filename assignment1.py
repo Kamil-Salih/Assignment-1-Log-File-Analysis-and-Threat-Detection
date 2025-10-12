@@ -18,6 +18,9 @@ counts = defaultdict(int)           # Create a dictionary to keep track of IPs (
 logfile= "CA1_project.log"
 incidents = []
 window = timedelta(minutes=10)
+total_successful_logins=0 #part 5
+total_failed_logins=0 #part 5
+total_logins=0 #part 5
 
 
 #Functions
@@ -177,3 +180,19 @@ with open("structured_report.txt", "w") as f5:
         f5.write(f_incidents.read())
 
 print("structured_report.txt was created, it stores failed counts and brute-force incidents.")
+
+
+#5.	Create a detailed statistical summary of the provided log file. (eg. Total number of logins, by day, unique IPs, Geolocations etc whatever you can think of) 
+
+with open(logfile, "r") as f:
+    for line in f:
+        if "Accepted" in line:
+            total_successful_logins=total_successful_logins+1
+        elif "Invalid" in line or "Failed" in line:
+            total_failed_logins=total_failed_logins+1
+
+total_logins=total_successful_logins+total_failed_logins
+print("\n")
+print(f"Total logins: {total_logins}")
+print(f"Total successful logins: {total_successful_logins}")
+print(f"Total failed logins: {total_failed_logins}")
