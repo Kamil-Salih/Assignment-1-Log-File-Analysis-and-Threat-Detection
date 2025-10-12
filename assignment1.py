@@ -21,6 +21,8 @@ window = timedelta(minutes=10)
 total_successful_logins=0 #part 5
 total_failed_logins=0 #part 5
 total_logins=0 #part 5
+ips = [] #part 5
+unique_ips = [] #part 5
 
 
 #Functions
@@ -179,11 +181,12 @@ with open("structured_report.txt", "w") as f5:
     with open("bruteforce_incidents.txt", "r") as f_incidents: #file bruteforce incidents
         f5.write(f_incidents.read())
 
-print("structured_report.txt was created, it stores failed counts and brute-force incidents.")
+print("Created structured_report.txt, it stores failed counts and brute-force incidents.")
 
 
 #5.	Create a detailed statistical summary of the provided log file. (eg. Total number of logins, by day, unique IPs, Geolocations etc whatever you can think of) 
 
+#Total number of logins
 with open(logfile, "r") as f:
     for line in f:
         if "Accepted" in line:
@@ -193,6 +196,52 @@ with open(logfile, "r") as f:
 
 total_logins=total_successful_logins+total_failed_logins
 print("\n")
-print(f"Total logins: {total_logins}")
-print(f"Total successful logins: {total_successful_logins}")
-print(f"Total failed logins: {total_failed_logins}")
+
+with open("logins.txt", "w") as f_logins: #file unique IPs
+    f_logins.write("Logins")
+    f_logins.write("\n")
+    f_logins.write(f"Total logins: {total_logins}")
+    f_logins.write("\n")
+    f_logins.write(f"Total successful logins: {total_successful_logins}")
+    f_logins.write("\n")
+    f_logins.write(f"Total failed logins: {total_failed_logins}")
+    f_logins.write("\n")
+
+print("Created logins.txt, it stores total logins, total successful logins, and total failed logins")
+
+
+#unique IPs
+
+with open(logfile, "r") as f:
+        for line in f:
+            ip=ip_parse(line.strip())
+            if ip:
+                unique_ips.append(ip)
+
+unique_ips = set(unique_ips)
+
+
+print("\n")
+
+with open("unique_ips.txt", "w") as f_unique: #file unique IPs
+    f_unique.write("Unique IP Addresses")
+    f_unique.write("\n")
+    for ip in sorted(unique_ips):
+        f_unique.write(ip)
+        f_unique.write("\n")
+
+print(f"Found {len(unique_ips)} unique IPs and saved to unique_ips.txt")
+
+
+with open("statistical_summary.txt", "w") as f6:
+    f6.write("\n")
+    with open("logins.txt", "r") as f_logins: #file logins
+        f6.write(f_logins.read())
+    
+    f6.write("\n")
+    
+    with open("unique_ips.txt", "r") as f_unique_ips: #file unique IPs
+        f6.write(f_unique_ips.read())
+
+print("\n")
+print("Created statistical_summary.txt, it stores logins and unique IPs.")
