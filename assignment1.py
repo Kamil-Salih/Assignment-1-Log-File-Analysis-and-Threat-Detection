@@ -3,7 +3,7 @@ Title: Log File Analysis and Threat Detection
 Student name: Kamil Salih
 Student number: C00307549
 Group: CW_KCCYB_B
-Last updated: 11/10/2025
+Last updated: 12/10/2025
 Description: A Python script that automates detection of common attack patterns in a log file.
 '''
 
@@ -11,6 +11,7 @@ Description: A Python script that automates detection of common attack patterns 
 from collections import defaultdict #...(part 2)
 from datetime import datetime #...(part 3)
 from datetime import timedelta #...(part 3)
+import json #...(part 3)
 
 #Variables
 counts = defaultdict(int)           # Create a dictionary to keep track of IPs (part 2)
@@ -151,3 +152,28 @@ print(f"Detected {len(incidents)} brute-force incidents")
 
 for incident in incidents[:5]:
     print(incident)
+
+
+with open("bruteforce_incidents.txt", "w") as f: #New change!
+    json.dump(incidents, f, indent=2)
+print("\n")
+print(f"Saved {len(incidents)} incidents to bruteforce_incidents.txt")
+
+
+#4.	Output results into a structured report.
+
+print("\n")
+
+with open("structured_report.txt", "w") as f5:
+    f5.write("Failed Login Counts")
+    f5.write("\n")
+    with open("failed_counts.txt", "r") as f_counts: #file failed counts
+        f5.write(f_counts.read())
+    
+    f5.write("\n")
+    f5.write("Brute-force Incidents")
+    f5.write("\n")
+    with open("bruteforce_incidents.txt", "r") as f_incidents: #file bruteforce incidents
+        f5.write(f_incidents.read())
+
+print("structured_report.txt was created, it stores failed counts and brute-force incidents.")
